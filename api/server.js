@@ -145,6 +145,7 @@ app.get('/refresh_token', (req, res) => {
 });
 
 const ensureAuthenticated = (req, res, next) => {
+  console.log('Session data:', req.session); // Log the session data to check if the access token is present
   if (req.session.access_token) {
     return next();
   }
