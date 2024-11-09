@@ -21,13 +21,16 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Middleware
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL, // Replace with your frontend URL
+    origin: process.env.FRONTEND_URL || 'https://mood-muzik.vercel.app', // Fallback to hardcoded URL if not set
     credentials: true, // Allow cookies (session) to be included in the requests
   })
 );
+
 app.use(express.json());
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET, // Replace with a strong secret key
@@ -39,7 +42,6 @@ app.use(
     },
   })
 );
-
 // Your existing routes...
 
 const client_id = process.env.SPOTIFY_CLIENT_ID;
