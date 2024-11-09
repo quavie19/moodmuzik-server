@@ -27,7 +27,7 @@ app.use(
       name: 'MyCoolWebAppCookieName',
       secure: process.env.NODE_ENV === 'production', // true in production
       maxAge: 60 * 60 * 1000, // Session lasts for 1 hour (in milliseconds)
-      domain: '.domain.com',
+      domain: 'https://moodmuzik-server.onrender.com',
       sameSite: 'none',
     },
   })
