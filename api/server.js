@@ -20,15 +20,17 @@ app.use(express.json());
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET, // Replace with a strong secret key
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: process.env.NODE_ENV === 'production', // true in production
-      maxAge: 60 * 60 * 1000, // Session lasts for 1 hour (in milliseconds)
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 1000,
+      sameSite: 'None', // Required for cross-origin cookies
     },
   })
 );
+
 // Your existing routes...
 
 const client_id = process.env.SPOTIFY_CLIENT_ID;
@@ -436,7 +438,7 @@ app.get('/tracks', ensureAuthenticated, async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 10000;
+const PORT = process.env.PORT || 4000;
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
