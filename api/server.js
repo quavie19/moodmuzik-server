@@ -12,16 +12,7 @@ require('dotenv').config({
 
 const app = express();
 
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/build')));
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../frontend', 'build', 'index.html'));
-  });
-}
-
 // Middleware
-
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || 'https://mood-muzik.vercel.app', // Fallback to hardcoded URL if not set
