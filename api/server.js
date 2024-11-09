@@ -20,17 +20,16 @@ app.use(express.json());
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET, // Replace with a strong secret key
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 1000,
-      sameSite: 'None', // Required for cross-origin cookies
+      secure: process.env.NODE_ENV === 'production', // true in production
+      maxAge: 60 * 60 * 1000, // Session lasts for 1 hour (in milliseconds)
+      domain: '.domain.com',
     },
   })
 );
-
 // Your existing routes...
 
 const client_id = process.env.SPOTIFY_CLIENT_ID;
@@ -90,8 +89,6 @@ app.get('/callback', async (req, res) => {
     // Store tokens in the session
     req.session.access_token = access_token;
     req.session.refresh_token = refresh_token;
-    console.log('Access Token:', access_token); // Debug log
-    console.log('Refresh Token:', refresh_token); // Debug log
 
     // Make sure to use return to prevent sending multiple responses
     return res.redirect(`${process.env.FRONTEND_URL}/artists`);
