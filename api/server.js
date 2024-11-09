@@ -11,7 +11,7 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'https://mood-muzik.vercel.app', // Fallback to hardcoded URL if not set
+    origin: process.env.FRONTEND_URL || 'https://www.moodmuzik.com', // Fallback to hardcoded URL if not set
     credentials: true, // Allow cookies (session) to be included in the requests
   })
 );
@@ -21,8 +21,7 @@ app.set('trust proxy', 1);
 
 app.use(
   session({
-    secret:
-      '7c4c48c3c76f12aecbaa672217bd4f5580e234e0e559c93d7856c2e64d85853d259043c6ec59e0a29253216d4040ddd2ff432408418433ae563593ed6ae89c84', // Replace with a strong secret key
+    secret: process.env.SESSION_SECRET, // Replace with a strong secret key
     resave: false,
     saveUninitialized: true,
     cookie: {
