@@ -25,10 +25,9 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: process.env.NODE_ENV === 'production', // true in production
+      secure: true, // true in production
       maxAge: 60 * 60 * 1000, // Session lasts for 1 hour (in milliseconds)
       sameSite: 'none',
-      domain: 'mood-muzik.vercel.app',
     },
   })
 );
