@@ -3,12 +3,8 @@ const session = require('express-session');
 const cors = require('cors');
 const querystring = require('querystring');
 const axios = require('axios');
-const path = require('path');
-const { generateRandomString } = require('../utils/utils');
 
-require('dotenv').config({
-  path: '/Users/jaquavia/Desktop/playlist-generator/backend/api/.env',
-});
+const { generateRandomString } = require('../utils/utils');
 
 const app = express();
 
