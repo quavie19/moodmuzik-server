@@ -17,6 +17,7 @@ app.use(
 );
 
 app.use(express.json());
+app.set('trust proxy', 1);
 
 app.use(
   session({
@@ -27,7 +28,6 @@ app.use(
       name: 'MyCoolWebAppCookieName',
       secure: process.env.NODE_ENV === 'production', // true in production
       maxAge: 60 * 60 * 1000, // Session lasts for 1 hour (in milliseconds)
-      domain: 'https://moodmuzik-server.onrender.com',
       sameSite: 'none',
     },
   })
