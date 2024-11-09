@@ -99,6 +99,8 @@ app.get('/callback', async (req, res) => {
     // Store tokens in the session
     req.session.access_token = access_token;
     req.session.refresh_token = refresh_token;
+    console.log('Access Token:', access_token); // Debug log
+    console.log('Refresh Token:', refresh_token); // Debug log
 
     // Make sure to use return to prevent sending multiple responses
     return res.redirect(`${process.env.FRONTEND_URL}/artists`);
