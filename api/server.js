@@ -3,6 +3,7 @@ const session = require('express-session');
 const cors = require('cors');
 const querystring = require('querystring');
 const axios = require('axios');
+const pool = require('./db');
 
 const { generateRandomString } = require('../utils/utils');
 
@@ -201,6 +202,19 @@ app.post('/delete', ensureAuthenticated, async (req, res) => {
       console.error('Error response data:', error.response.data);
     }
     res.status(500).send('An error occurred while deleting playlists');
+  }
+});
+
+app.post('signup', async (req, res) => {
+  const { email } = req.body;
+  try {
+    const response = await pool.query(
+      'INSERT INTO user (email) VALUES ($1) RETURNING *',
+      [email]
+    );
+    res.json(email.rows[0]);
+  } catch (err) {
+    console.error(err.message);
   }
 });
 
