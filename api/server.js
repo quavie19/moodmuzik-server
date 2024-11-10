@@ -6,6 +6,15 @@ const axios = require('axios');
 const pool = require('./db');
 
 const { generateRandomString } = require('../utils/utils');
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER, // Use your new no-reply email
+    pass: process.env.GMAIL_PASS, // Use your app-specific password
+  },
+});
 
 const app = express();
 
@@ -142,13 +151,13 @@ app.get('/refresh_token', (req, res) => {
 });
 
 const ensureAuthenticated = (req, res, next) => {
-  console.log('Session data:', req.session); // Log the session data to check if the access token is present
   if (req.session.access_token) {
     return next();
   }
   res.status(401).json({ error: 'Not authenticated' });
 };
 
+// sign up
 app.post('/signup', async (req, res) => {
   const { email } = req.body;
 
@@ -157,22 +166,51 @@ app.post('/signup', async (req, res) => {
   }
 
   try {
+    // Insert user into database
     const response = await pool.query(
-      'INSERT INTO users (email) VALUES ($1) RETURNING *',
+      'INSERT INTO "users" (email) VALUES ($1) RETURNING *',
       [email]
     );
+
+    // Send a confirmation email to the user
+    const sendConfirmationEmail = async (userEmail) => {
+      const mailOptions = {
+        from: 'noreply@moodmuzik.com',
+        to: userEmail,
+        subject: 'Thank you for signing up',
+        text: 'Thank you for signing up. You will receive a link to access Mood Muzik shortly.',
+      };
+
+      await transporter.sendMail(mailOptions);
+    };
+
+    // Send an email to you when a user signs up
+    const sendSignupNotification = async (userEmail) => {
+      const mailOptions = {
+        from: 'noreply@moodmuzik.com',
+        to: 'jaquavia@moodmuzik.com',
+        subject: 'New User Signup',
+        text: `A new user has signed up with the email: ${userEmail}`,
+      };
+
+      await transporter.sendMail(mailOptions);
+    };
+
+    // Call the email sending functions asynchronously
+    sendConfirmationEmail(email).catch(console.error);
+    sendSignupNotification(email).catch(console.error);
+
     res.status(201).json({
       message: 'User registered successfully',
       user: response.rows[0],
     });
   } catch (err) {
-    // Check for unique constraint violation (e.g., if email already exists)
-    if (err.code === '23505') {
-      // PostgreSQL unique_violation error code
-      return res.status(409).json({ error: 'Email already registered' });
-    }
-    console.error(err.message);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('Database error:', err); // Log detailed error to Render logs
+
+    // Send error details in response for debugging (remove in production)
+    res
+      .status(500)
+      .json({ error: 'Internal server error', details: err.message });
   }
 });
 
