@@ -157,6 +157,22 @@ const ensureAuthenticated = (req, res, next) => {
   res.status(401).json({ error: 'Not authenticated' });
 };
 
+// LOGOUT (Disconnect from Spotify)
+app.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error destroying session:', err);
+      return res.status(500).send('Logout failed');
+    }
+
+    // Optionally clear the cookie
+    res.clearCookie('connect.sid'); // use your session cookie name if different
+
+    // Redirect back to frontend home or login
+    res.redirect(`${process.env.FRONTEND_URL}/`);
+  });
+});
+
 // sign up
 app.post('/signup', async (req, res) => {
   const { email } = req.body;
